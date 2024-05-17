@@ -1,0 +1,399 @@
+-------------------------------------------------------------
+DESIGN
+
+--> RAKAM
+int : 4 milyar
+
+smallint : 32.000
+
+tinyint : 0-255
+
+--> KARAKTER
+
+CHAR(10) : EN FAZLA 10 KARAKTERLIK VERI GIRISI YAPILABILIR
+NCHAR(10) : VERILEN KARAKTER SINIRI KADAR YER KAPLAR 
+
+-> EGERKI BUTUN ALAN KAPLANMAMISSA SONUNDA BOSLUK BIRAKIR     |
+
+VARCHAR(10) : CHARIN IKI KATI YER KAPLAR AMA GIRILEN VERI KADAR YER KAPLAR
+NVARCHAR(10) : OZEL KARAKTER GIRISINE IZIN VERIR N HARFI
+
+
+? CTRL + N OPEN A NEW QUERY
+
+! SONRADAN EKLENEN SUTUN MUTLAKA ALLOW NULLS TİKLİ OLMASI GEREKİR 
+----> çunku eskiden girilmiş veriler null degeri alacağı için hata verir
+
+!update sadece  veri güncelleme işleminde kullanılır
+
+! T SQL İLE SUTUN EKLEMEK ICIN
+----> ALTER TABLE table_name
+	ADD column_name datatype;
+
+-> alter table KUTUPHANE2		     --> COLUMNS DİYE BELİRTMENE GEREK YOK
+ADD YAYIN_EVI NVARCHAR(50) 
+
+-> alter table KUTUPHANE2			--< SUTUN SILME
+DROP COLUMN YAYIN_EVII 
+--------------------------------------------------------------
+USE OKULDB  --> database seçme işlemi yapmaya yarar
+
+create table KUTUPHANE2(
+KITAP_ID int NOT NULL, 
+KITAP_ADI NVARCHAR(80) NOT NULL,
+YAZARADI NVARCHAR(30) NOT NULL,
+SAYFA_SAYISI SMALLINT NOT NULL
+
+)
+
+
+---------------------------------------------------------------
+
+mamak database
+
+
+select * from dbo.Payment where CustomerName is null
+-> Müşteri ismi kısmı boş olanları getir
+
+--> Eğerki orada NULL yazmıyorsa ve boş olan isteniyorsa 
+-> select * from dbo.Payment where DiscountReason =''
+
+select * from dbo.Payment where DiscountReason is null
+update dbo.Payment set DiscountReason = 'YAN TARAF' where Id =7 or Id =8
+-> ID si 7 veya 8 olan verinin DiscountReason değerini YAN TARAF olarak değiştirir
+
+update dbo.Payment set  DiscountReason =null where DiscountReason=''
+-> DiscountReason değerinde veri girilmemiş değerlerin yerine NULL yaz
+
+
+Butun ucretleri tek bir Sütun altında toplama
+
+select 
+	case 
+		WHEN CashPayment>=CreditPayment AND CashPayment>TicketPayment AND CashPayment>OnlinePayment THEN CashPayment
+		WHEN CreditPayment>=CashPayment AND CreditPayment>TicketPayment AND CreditPayment>OnlinePayment THEN CreditPayment
+		WHEN TicketPayment>=CreditPayment AND TicketPayment>CashPayment AND TicketPayment>OnlinePayment THEN TicketPayment
+		WHEN OnlinePayment>=CreditPayment AND OnlinePayment>TicketPayment AND OnlinePayment>CashPayment THEN OnlineOdeme
+	END 
+		AS Ucret from dbo.Payment 
+------------------------------------------,
+(INNER) JOIN: Returns records that have matching values in both tables
+LEFT (OUTER) JOIN: Returns all records from the left table, and the matched records from the right table
+RIGHT (OUTER) JOIN: Returns all records from the right table, and the matched records from the left table
+FULL (OUTER) JOIN: Returns all records when there is a match in either left or right table
+
+/* Join TableName kısmından sonra ON getirmeyi unutma 
+ left join Orders ON Orders.CustomerID = Customer.CustomerID
+
+INNER JOIN
+select * from dbo.Bill INNER JOIN dbo.Bill_LOG ON dbo.Bill.Date=dbo.Bill_LOG.Date
+-> İki table arasında Sütun isimleri verilerek kıyaslam yapılmasına olanak sağlar
+
+FULL OUTER JOIN
+
+-> Butun Sütunları çeker
+
+LEFT JOIN
+
+-> table1 in 
+--------------------------------------------------------------
+HAVING
+
+EXAMPLE
+
+SELECT CITY, SUM(TOTALPRICE)TOPLAMCIRO,COUNT(DISTINCT CUSTOMERID)CUSTOMERCOUNT,SUM(TOTALPRICE)/COUNT(DISTINCT CUSTOMERID)AVGSALE_FORONECUSTOMER FROM SALES
+GROUP BY CITY
+HAVING COUNT(DISTINCT CUSTOMERID) >1000
+ORDER BY CUSTOMERCOUNT DESC
+
+---------------------------------------------------------------
+DATE
+
+SET LANGUAGE Turkish
+SELECT DATEPART(DW,DATE_)FROM SALES GROUP BY  DATEPART(DW,DATE_) 
+--->1,2,3,4,5,6,7
+SELECT DATENAME(DW,DATE_)FROM SALES GROUP BY  DATENAME(DW,DATE_)
+--->Pazartesi,Perşembe,Salı,Cuma,Pazar,Çarşamba,Cumartesi
+
+->EXAMPLE
+SELECT
+DATENAME(DW,DATE_)DAY_NAME,
+SUM(TOTALPRICE)TOTALSALE, SUM(AMOUNT)MIKTAR, COUNT(*)ROWCOUNT_
+FROM SALES
+GROUP BY DATEPART(DW,DATE_),DATENAME(DW,DATE_)
+ORDER BY DATEPART(DW,DATE_)-->DAY NUMBERA GÖRE AYARLANDI, GROUP BY KISMINDA GEÇMESİ GEREKMEKTE YOKSA HATA VERİR
+---------------------------------------------------------------
+CONVERT
+
+SELECT CONVERT(DATE, '2022-01-01 08:58:27.467')
+
+
+SELECT CITY,CONVERT(DATE,DATE_),SUM(TOTALPRICE)TOPLAMTUTAR FROM SALES GROUP BY CITY,CONVERT(DATE,DATE_) ORDER BY CITY,CONVERT(DATE,DATE_)
+-->Her gün o şehirde yapılan toplam ciroyu getirir.
+---------------------------------------------------------------
+LIKE -like
+
+INSERT INTO sales.feedbacks(comment)
+VALUES('Can you give me 30% discount?'),
+      ('May I get me 30USD off?'),
+      ('Is this having 20% discount today?');
+
+Buradaki %30 değerine sahip commenti bul.
+
+SELECT 
+   feedback_id, 
+   comment
+FROM 
+   sales.feedbacks
+WHERE 
+   comment LIKE '%30!%%' ESCAPE '!';
+
+! espape karakteri ile 30% karaktere sahip comment satırı bulunmuş oluruz
+--> https://www.sqlservertutorial.net/sql-server-basics/sql-server-like/
+
+
+In this query, the  ESCAPE clause specified that the character ! is the escape character.
+ It instructs the LIKE operator to treat the % character as a literal string instead of a wildcard.
+ Note that without the ESCAPE clause, the query would return an empty result set.
+
+---------------------------------------------------------------------
+-> REPLACE
+Use REPLACE(str, from_str, to_str)
+
+----------------------------------------------------------------------
+-> Veri Okuma Yapma
+
+
+/* Soru: 10000 Id ye sahip bir veriden 100 adet verilen Id lerden eşleşenleri getiren Query yi yaz */
+
+
+----SELECT * FROM OPENROWSET(BULK 'C:\yazılım\sezersQ.txt', SINGLE_CLOB) AS FileContent;
+--> SADECE TEK BİR SATIRDA VERİ GÖSTERİYOR
+-- ONUN YERİNE GEÇİCİ BİR TABLE OLUŞTURUP ONUN İÇİNE VERİ AKTARIMINI YAPTIM
+-- SATIRLARI BİRBİRİNDEN AYIRMAK İÇİN İSE ROWTERMINATOR in DEGERİNİ '\n' YAPTIM Kİ SATIRLARDAN AYRILSIN
+
+CREATE TABLE ATempTable (Id NVARCHAR(MAX));
+
+BULK INSERT ATempTable
+FROM 'C:\yazılım\SQL\Sql_Questions\sezersQ.txt'
+WITH (
+	ROWTERMINATOR = '\n'
+	 );
+
+select * from ATempTable
+
+--DROP TABLE ATempTable
+
+
+--> COZUM 1
+SELECT * FROM dbo.Product P INNER JOIN ATempTable T ON P.Id = T.Id
+
+--> COZUM 2
+SELECT * FROM dbo.Product where Id IN (32290,31229,39,30161,44,32283,30183,31239,1064,30187)
+
+------------------------------------------------------------------------------
+
+-> CASTING
+
+SELECT CAST(SUM(LAT_N) AS DECIMAL(20,4)) FROM STATION 
+WHERE LAT_N > 38.7880 AND LAT_N<137.2345 
+
+20 BASAMAK SONRA .0000 ŞEKLİNDE VERİ TUTUYOR
+-------------------------------------------------------------------------------------
+
+-> KAPLADIĞI ALAN HESAPLAMA
+
+EXEC sp_spaceused TABLE_NAME
+
+------------------------------------------------------------------------------------
+
+-> TRUNCATE KOMUTU
+
+---> TABLONUN İÇİNİ TAMAMEN BOŞALTIR ( BÜTÜN SATIRLARI SİLER ) 
+
+TRUNCATE TABLE TABLE_NAME 
+
+!!! Truncate ile Delete in farkı 
+
+Truncate tabloyu ilk haline çevirir 
+Delete ise sadece verileri siler
+
+#Truncate de artan id sıfırlanır 
+#Delete de artan id sıfırlanMAZ KALDIGI YERDEN DEVAM EDER
+
+#TRUNCATE'DE WHERE İLE SATIR SİLİNEMEZ
+#truncate delete e göre daha hızlı
+
+-----------------------------------------------------------------------------------------
+DATEDIFF --> Gün,Ay,Yıl hesaplamak için kullanılır
+
+SELECT DATEDIFF(YEAR,'2002-08-03','2024-04-03')
+
+SELECT DATEDIFF(YEAR,BIRTHDATE,GETDATE())
+
+SELECT GETDATE()
+-> bulunduğu gün ay yıl saat saniye bilgisini getirir
+
+
+Example
+UPDATE CUSTOMERS
+SET AGE = DATEDIFF(YEAR,GETDATE(),BIRTHDATE)
+
+
+-------------------------------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------
+
+______________________________________________________
+______________________________________________________
+HACKERRANK
+
+1-) Query all columns for all American cities in the CITY table with populations larger than 100000. The CountryCode for America is USA.
+-< select * from CITY where POPULATION>100000 AND COUNTRYCODE='USA';
+
+X-)weather-observation-station-3
+SELECT CITY FROM STATION WHERE ID%2=0 GROUP BY CITY;
+
+select ProductName,count(ProductName) as 'ADET' from dbo.Bill group by ProductName;
+-> Bu şekilde de SSMS de count gibi bir method la beraber kullanılması gerekir
+
+
+X-)weather-observation-station-5
+select TOP 1 city, len(city) as c1 from station
+order by c1 asc, city asc
+
+select top 1 city, len(city) as c2 from station
+order by c2 desc, city desc
+
+
+X-)weather-observation-station-6
+select distinct city from STATION where left(city,1)in('a','e','i','o','u')
+Query the list of CITY names starting with vowels (i.e., a, e, i, o, or u) from STATION. Your result cannot contain duplicates.
+
+
+X-)weather-observation-station-7
+
+X-)Type of Triangle
+select A, B, C,
+    CASE
+        WHEN A = B AND B = C THEN 'Equilateral'
+        WHEN A = B OR B = C OR A = C THEN 'Isosceles'
+        WHEN A != B OR B !=C OR A != C THEN 'Scalene'
+        WHEN A + B <= C OR A + C <= B OR B + C <= A THEN 'Not A Triangle'
+    END AS TriangleType
+FROM TRIANGLES;
+
+### ->> Gibi bir tanım yaparken unutulmaması gerek kısım 
+		A, B, C,  deki C den sonraki virgül kısmıdır yoksa CASE var diye hata verir
+REAL CODE
+select
+    CASE
+        WHEN A + B <= C OR A + C <= B OR B + C <= A THEN 'Not A Triangle'
+        WHEN A = B AND B = C AND A = C THEN 'Equilateral'
+        WHEN A = B OR B = C OR A = C THEN 'Isosceles'
+        ELSE 'Scalene'
+    END AS TriangleType
+FROM TRIANGLES;
+
+X-) New Compnaies
+
+
+select distinct C.company_code, C.founder,
+COUNT(distinct L.lead_manager_code),
+COUNT(distinct S.senior_manager_code),
+COUNT(distinct M.manager_code),
+COUNT(distinct E.employee_code)
+
+from Company C
+
+INNER JOIN Lead_Manager L ON L.company_code = C.company_code
+
+INNER JOIN Senior_Manager S ON S.company_code = C.company_code
+    AND S.lead_manager_code = L.lead_manager_code
+    
+INNER JOIN Manager M ON M.company_code = C.company_code
+    AND M.lead_manager_code = L.lead_manager_code
+    AND M.senior_manager_code = S.senior_manager_code
+
+INNER JOIN Employee E ON E.company_code = C.company_code
+    AND E.lead_manager_code = L.lead_manager_code
+    AND E.senior_manager_code = S.senior_manager_code
+    AND E.manager_code = M.manager_code
+    
+    
+Group by C.company_code, C.founder
+ORDER BY C.company_code;
+
+-->Count ile sayım yapmak istersen Select kısmında count ile sayım yapmadığın
+ 	yukarıdaki company_code ve founder gibi kalan bütün değişkenleri 
+ 	group by komutu ile gruplaman gerekir yoksa hata alırsın.
+
+
+
+X-) TOP COMPETITORS
+
+WITH ch AS (select h.hacker_id, h.name, COUNT(s.challenge_id) as cnt
+from hackers h
+           Inner join submissions s on s.hacker_id = h.hacker_id
+           Inner join challenges c on c.challenge_id = s.challenge_id
+           Inner join difficulty d on d.difficulty_level = c.difficulty_level
+                where s.score = d.score
+                    group by h.hacker_id,h.name)
+
+Select ch.hacker_id, ch.name from ch 
+    Where ch.cnt > 1 
+        order by ch.cnt desc , ch.hacker_id;
+
+
+
+X-) Ollivander's Inventory
+
+SELECT w.id, p.age, w.coins_needed, w.power 
+FROM Wands w
+INNER JOIN Wands_Property p ON p.code = w.code
+WHERE p.is_evil = 0
+AND EXISTS (
+    SELECT 1
+    FROM (
+        SELECT code, power, MIN(coins_needed) AS min_coins
+        FROM Wands
+        GROUP BY code, power
+    ) AS subquery
+    WHERE w.code = subquery.code
+    AND w.power = subquery.power
+    AND w.coins_needed = subquery.min_coins
+)
+ORDER BY w.power DESC, p.age DESC;
+
+
+X-) CONTEST LEADERBOARD
+
+select distinct( h.hacker_id), h.name, sum(s.score) total_score from Hackers h
+
+JOIN (select hacker_id, challenge_id, max(score) as score
+      from Submissions group by hacker_id,challenge_id)  s ON s.hacker_id = h.hacker_id
+group by h.hacker_id, h.name
+having sum(s.score) > 0
+order by total_score desc, h.hacker_id asc
+
+--> Burada asıl dikkat etmen gereken 
+aynı challenge ı birden fazla defa yapılması durumunda oluşacak olan bazı score ların 
+birbirinden fazla olma durumunu da ele alarak ulaşılan en yüksek skorları hesaplamak gerekmektedir.
+
+X- ) 
+_______________________________________________________________________
+-----------------------------------------------------------------------
+________________________________________________________________________
+ERRORS
+
+->IDENTITY_INSERT is set to OFF.
+Cannot insert explicit value for identity column in table 'CUSTOMERS' when IDENTITY_INSERT is set to OFF.
+S-->SET IDENTITY_INSERT CUSTOMERS ON
+
+->Column does not allow nulls
+Cannot insert the value NULL into column 'NAMESURNAME', table 'CRM.dbo.CUSTOMERS'; column does not allow nulls. INSERT fails.
+S-->ALLOW NULL SEÇENEĞİ TİKLİMİ DİYE BAK

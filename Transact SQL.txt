@@ -1,0 +1,71 @@
+--> TRANSACT- SQL				T-SQL
+/*ASCII
+SELECT ASCII('A')
+SELECT ASCII('Z')
+
+*/
+/*CHAR				opposite of ASCII
+SELECT CHAR(65)   -->A
+SELECT CHAR(90)   -->Z
+
+*/
+/*CONCAT			Birden fazla stringi birleştirir
+SELECT CONCAT('TURKCELL',' ','GELECEGİ YAZANLAR')
+SELECT 'TURKCELL '+ 'GELECEGİ '+'YAZANLAR'
+
+BAZEN + PROBLEM ÇIKARTABİLİR
+*/
+/*LEFT-RIGHT
+SELECT LEFT('TURKCELL GELECEGİ YAZANLAR',8) 
+SELECT RIGHT('TURKCELL GELECEGİ YAZANLAR',8)
+
+*/
+/* LTRIM,RTRIM, TRIM					TRIM = KIRPMAK
+SQL Server 2022 Oncesi
+SELECT TRIM(' TURKCELL GELECEGİ YAZANLAR ') -->TURKCELL GELECEGİ YAZANLAR: SAĞ/SOL tarftaki boşlukları siler
+SELECT LTRIM(' TURKCELL GELECEGİ YAZANLAR ') -->TURKCELL GELECEGİ YAZANLAR : SOL
+SELECT RTRIM(' TURKCELL GELECEGİ YAZANLAR ') --> TURKCELL GELECEGİ YAZANLAR: SAĞ bosluk siler
+
+SELECT LTRIM('TURKCELL GELECEGİ YAZANLAR','TURKCELL') --> GELECEGİ YAZANLAR:
+SELECT RTRIM('TURKCELL GELECEGİ YAZANLAR','YAZANLAR') -->TURKCELL GELECEGİ :
+
+SQL Server 2022 Sonrası
+SELECT TRIM (LEADING 'TURKCELL' FROM 'TURKCELL GELECEGİ YAZANLAR, TURKCELL GELECEGİ YAZANLAR') --> ILK Turkcell i siler
+SELECT TRIM (TRAILING 'YAZANLAR' FROM 'TURKCELL GELECEGİ YAZANLAR, TURKCELL GELECEGİ YAZANLAR') --> SON Yazanlar ı siler
+SELECT TRIM (BOTH '#' FROM '#TURKCELL GELECEGİ YAZANLAR#') --> SAG/SOL # i siler
+SELECT TRIM (BOTH '<B></B>' FROM '<B>TURKCELL GELECEGİ YAZANLAR</B>') --> SAG/SOL <B></B> i siler
+
+*/
+/*Lower, Upper, Reverse, Replicate
+SELECT LOWER('TURKCELL GELECEGİ YAZANLAR') --> turkcell gelecegi yazanlar
+SELECT UPPER('turkcell gelecegi yazanlar') --> TURKCELL GELECEGİ YAZANLAR
+SELECT REVERSE('Geleceği Yazanlar') --> ralnazaY iğeceleG
+SELECT REPLICATE('SQL',5) --> SQLSQLSQLSQLSQL 
+
+*/
+/*Replace
+SELECT REPLACE('M.Süleyman Güney','M.','Muhammed ') -->Muhammed Süleyman Güney
+
+*/
+/*Substring		String parçalama
+SELECT SUBSTRING('SQL Server 2022 ile yeni gelen özelliklerden biri de iyileştirilen TRIM fonksiyonudur' , 1, 15)
+Output: SQL Server 2022
+
+SELECT SUBSTRING('SQL Server 2022 ile yeni gelen özelliklerden biri de iyileştirilen TRIM fonksiyonudur' , 17, 25)
+Output: ile yeni gelen özellikler
+
+*/
+/*Charindex
+SELECT CHARINDEX('SQL','SQL Server 2022 ile yeni gelen özelliklerden biri de iyileştirilen TRIM fonksiyonudur') -->1
+SELECT CHARINDEX('TRIM','SQL Server 2022 ile yeni gelen özelliklerden biri de iyileştirilen TRIM fonksiyonudur') -->68
+
+Aranan ifade birden fazla geçse bile ilk buldugu degeri döndürür
+*/
+/*String Split						Tablo türünde deger döndürür
+SQL 2022 ONCESI
+SELECT * FROM string_split('TURKCELL GELECEGI YAZANLAR',' ') -->TURKCELL,GELECEGI,YAZANLAR
+
+SQL 2022 SONRASI
+SELECT * FROM string_split('Istanbul,Ankara,Konya',',',1) -->Istanbul,1,	Ankara,2,   Konya,3
+**ordinal diye satır numaralarını da döndürür
+*/

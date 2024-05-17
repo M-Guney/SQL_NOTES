@@ -1,0 +1,425 @@
+Bütün SQL dosyaları burada
+C:\yazılım\SQL
+
+
+SQL de herhangi bir değişken ataması
+ yapıyorsan Türkçe karakter içermemesi gerkiyor
+
+SELECT ad, soyad,telefon_no  FROM public.ogrenci where numara=4 or numara=3
+gibi herhangi bi r sorgu yaparken probleme yaşamamak için
+COlUMN(sütun) isimlerini küçük harflerle gir(design kısmındaki ile aynı olmalı)
+
+SELECT te filan CASE SENSETIVE değil 
+büyük ya da küçük yazılması pek de Önemli değil
+
+Group By kullanımında Alias kullanılamaz
+Order By da kullanılabilir
+
+________________________________________________
+Some of The Most Important SQL Commands
+
+* SELECT - extracts data from a database
+* UPDATE - updates data in a database
+* DELETE - deletes data from a database
+* INSERT INTO - inserts new data into a database
+* CREATE DATABASE - creates a new database
+* ALTER DATABASE - modifies a database
+* CREATE TABLE - creates a new table
+* ALTER TABLE - modifies a table
+* DROP TABLE - deletes a table
+* CREATE INDEX - creates an index (search key)
+* DROP INDEX - deletes an index
+
+select * from Customers; Customers table ındaki bütün sütünları seçer
+
+The SELECT DISTINCT statement is used to return only distinct (different) values.
+
+SELECT distinct soyad  from ogrenci
+-> DISTINCT olursa SET gibi sadece aynı elemanlara sahip iki eleman olamaz 
+
+SELECT count(*) as DistinctSoyad from (select distinct soyad from ogrenci)
+-> ogrenci table ındaki farklı soyada sahip kişilerin sayısını geri 
+   DistinctSoyad olarak geri döndürür
+
+The WHERE clause is used to filter records.
+Note: The WHERE clause is not only used in SELECT statements,
+ it is also used in UPDATE, DELETE, etc.!
+
+SELECT numara from ogrenci where numara>3 
+WHERE ile karşılaştırma da yapılabilinir
+
+
+_____________________________
+Operator	Description
+=	Equal	
+>	Greater than	
+<	Less than	
+>=	Greater than or equal	
+<=	Less than or equal	
+<>	Not equal. Note: In some versions of SQL this operator may be written as !=	
+BETWEEN	Between a certain range	
+LIKE	Search for a pattern	
+IN	To specify multiple possible values for a column
+_________________________________________________________
+
+SELECT * FROM Customers
+WHERE City LIKE 's%';
+-> "Customers" tablosundan şehri "s" harfi ile başlayan müşteri kayıtlarını seçer.
+
+SELECT * FROM Products
+WHERE Price BETWEEN 50 AND 60;
+-> Fiyatı 50 ve 60 arası olan ürünleri getirir
+
+SELECT * FROM Customers
+WHERE City IN ('Paris','London');
+-> "Customers" tablosundan şehri "Paris" veya "London" olan müşteri kayıtlarını seçer. 
+
+SELECT * FROM Products
+WHERE Price <> 18;
+-> Fiyatı 18 olmayan [ != ]de olabilir
+
+// ORDER BY
+SELECT * from ogrenci order by telefon_no
+-> Telefon_no ya göre sıralanmış liste döndürür
+Varsayılan olarak, sıralama "ASC" olarak kabul edilir.
+// Eğer ki ifade ORDER BY adres ASC, telefon_no ASC;
+// -> Sıralanırken Aynı adrese sahip kişiler arasında telefon numarasına göre sıralama yapar
+
+
+// ALTARNATİF YOL: ORDER BY 2 DESC,3
+-->   2.Sutuna ve 3'e göre sıralama yapar
+//Örnek
+ORDER BY
+    Marks DESC, -- Notlara göre büyükten küçüğe sıralama
+    RIGHT(Name, 3) ASC,
+    ID ASC;
+
+
+"ASC" (Ascending) belirtilirse, sıralama küçükten büyüğe doğru yapılır.
+SELECT * from ogrenci order by telefon_no asc
+ 
+"DESC" (Descending) belirtilirse, sıralama büyükten küçüğe doğru yapılır.
+SELECT * from ogrenci order by telefon_no desc
+ 
+Order Alphabetically
+For string values the ORDER BY keyword will order alphabetically:
+SELECT * from ogrenci order by ad  [ default olarak asc olarak gelir ]
+SELECT * from ogrenci order by ad desc
+
+The following SQL statement selects all customers from the "Customers" table,
+ sorted by the "Country" and the "CustomerName" column. 
+This means that it orders by Country, but if some rows have the same Country, 
+it orders them by CustomerName:
+--> SELECT * from ogrenci order by numara,soyad desc
+
+Using Both ASC and DESC
+The following SQL statement selects all customers from the "Customers" table, sorted ascending by the "Country" and descending by the "CustomerName" column:
+SELECT * FROM Customers ORDER BY Country ASC, CustomerName DESC; 
+
+Where no city='Berlin' dersen Berlin harici bütün şehirleri kapsar
+
+
+
+The WHERE clause can contain one or many AND operators.
+SELECT * FROM Customers WHERE Country = 'Spain' AND CustomerName LIKE 'G%';
+
+İsmi G ile başlayan ve ülkesi Spain olanları listeler
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+The AND operator displays a record if all the conditions are TRUE.
+
+The OR operator displays a record if any of the conditions are TRUE.
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+insert INTO ogrenci(numara,ad,soyad,telefon_no) 
+values(7, 'Süleyman','Güney', '504');
+-> Şeklinde direk veri ataması da yapabiliyoruz
+
+SQL NULL Values
+How to Test for NULL Values?
+We will have to use the [IS NULL ] and [ IS NOT NULL ] operators instead.
+
+select * from ogrenci where adres is NULL
+-> Sadece null olan satırları gösterir
+select * from ogrenci where adres is not NULL
+-> Sadece dolu olan satırları gösterir
+____________________________________________________________________________
+The SQL UPDATE Statement
+The UPDATE statement is used to modify the existing records in a table.
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||
+Note: Be careful when updating records in a table! 
+Notice the WHERE clause in the UPDATE statement.
+ The WHERE clause specifies which record(s) that should be updated. 
+If you omit the WHERE clause, all records in the table will be updated!
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+update ogrenci set adres = 'Konya' where adres is null
+-> ogrenci de NULL olan bütün adreslere Konya değerini atar
+
+SQL DELETE Statement
+The [ DELETE ] statement is used to delete existing records in a table.
+
+DELETE FROM table_name WHERE condition;
+
+Note: Be careful when deleting records in a table! 
+Notice the WHERE clause in the DELETE statement. The WHERE clause specifies 
+which record(s) should be deleted.
+ If you omit the WHERE clause, all records in the table will be deleted!
+
+
+DELETE ALL RECORDS --> DELETE FROM Customers;
+DELETE A TABLE --> DROP TABLE Customers;
+
+________________________________________________________________________________
+________________________________________________________________________________
+________________________________________________________________________________
+LIMIT
+select adres from ogrenci limit 4;
+-> Buradaki 4 sayısı kaç tane çıktı istedğindir
+
+select adres from ogrenci limit 4 offset 5;
+-> Bu durumda, OFFSET ifadesi ile belirtilen 5'den başlayarak LIMIT ifadesiyle 
+belirtilen numara kadar satır getirilecektir.
+
+FETCH FIRST
+select adres from ogrenci fetch first 4 rows only;
+
+SQL TOP PERCENT Example
+SELECT TOP (10) percent *
+  FROM [EDU].[production].[products]
+  where product_name like 'E%'
+  order by product_name asc
+
+-> production.products tablosunun ürün adı E ile başlayan %10 luk kısımını getirir
+
+
+
+SELECT TOP KISMINA TEKRARDAN BAKABİLİRSİN AMA UYGULAMA YAPMAZSAN AKLINDA KALMAZ
+
+---------------------------------------------------------------------------
+# Aggregate Functions
+
+Min and Max
+select min(telefon_no) from ogrenci
+select max(telefon_no) from ogrenci
+
+Ignore Duplicates
+select count(distinct soyad) from ogrenci
+-> Aynı soyada sahip olmayan kişileri sayısını getirir
+
+TOP
+ select top 100 * from CUSTOMERS
+-> Verilen max adet kadar veriyi getirir
+
+select top 50 PERCENT* from CUSTOMERS
+-> %50 sini getirir
+
+
+Use an Alias
+Give the counted column a name by using the AS keyword.
+select count(distinct numara) AS number_of_records from ogrenci
+
+SQL SUM
+select sum(numara) from ogrenci
+-> içine verilen sütündaki verileri toplar
+
+select sum(numara *3 ) from ogrenci 
+-> gibi SUM() içinde işlem de yapılabilinir
+
+SELECT SUM(Price * Quantity)
+FROM OrderDetails
+LEFT JOIN Products ON OrderDetails.ProductID = Products.ProductID;
+-> Şeklinde de miktar ile ücreti çarptıradabiliriz
+
+ORTALAMA AVARAGE
+select avg(numara) from ogrenci
+Note: NULL values are ignored.
+
+____________________________________________________________________________
+SQL Like
+
+____________________________________________________________________________________________
+____________________________________________________________________________________________
+  PIVOT	:	 How To Convert Rows to Columns
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+
+https://www.youtube.com/watch?v=lcIs9wCXCCc 
+--> SQL Server Dinamik Pivot kullanımı (Kolonların dinamik olarak başka tablodan gelmesi)
+
+|> DECLARE bir değişken tanımlaması yapmak için kullanılır
+|> EXECUTE saklı yürütme planları, prosedürler veya fonksiyonların çağrılması için kullanılır. 
+          --> Method oluşturmak/çağırmak gibi
+
+
+DECLARE @cols as NVARCHAR(MAX), @query as NVARCHAR(MAX)
+
+SET @cols = STUFF((SELECT ',' + QUOTENAME(ProductName) from (select distinct ProductName from mamak.dbo.Bill) c order by ProductName FOR XML PATH(''),TYPE ).value('.', 'NVARCHAR(MAX)'),1,1,'')
+
+--SELECT @cols
+
+---> @cols bütün ürünleri tek bir satır da []ve , ler ile ayrır
+
+set @query = 'SELECT * FROM(select ProductId, ProductName,Price FROM mamak.dbo.Bill_LOG) Data  PIVOT ( MAX(Price) FOR ProductName IN (' + @cols + ')) as PivotTable'
+
+EXECUTE(@query)
+
+ProductId | Laptop | Smartphone | Headphones
+-------------------------------------------
+1         | 1200   | NULL       | NULL
+2         | NULL   | 800        | NULL
+3         | NULL   | NULL       | 100
+4         | 1500   | NULL       | NULL
+5         | NULL   | 900        | NULL
+6         | NULL   | NULL       | 120
+
+
+Summary: in this tutorial, you will learn how to use the SQL Server PIVOT operator to convert rows to columns.
+https://www.sqlservertutorial.net/sql-server-basics/sql-server-pivot/
+____________________________________________________________________________________________
+____________________________________________________________________________________________
+
+
+select Concat(Name,'(',Left(Occupation,1),')')FROM OCCUPATIONS
+
+SELECT CONCAT('There are a total of ', COUNT(Occupation), ' ', LOWER(Occupation), 's.') AS Result
+FROM OCCUPATIONS
+GROUP BY Occupation
+ORDER BY COUNT(Occupation) ASC, Occupation ; 
+
+
+
+
+
+
+
+
+
+
+SELECT 
+    MAX(Doctor) as Doctor,
+    MAX(Professor) as Professor,
+    MAX(Singer) as Singer,
+    MAX(Actor) as Actor
+FROM (
+    SELECT 
+        CASE WHEN Occupation = 'Doctor' THEN Name END as Doctor,
+        CASE WHEN Occupation = 'Professor' THEN Name END as Professor,
+        CASE WHEN Occupation = 'Singer' THEN Name END as Singer,
+        CASE WHEN Occupation = 'Actor' THEN Name END as Actor,
+        ROW_NUMBER() OVER (PARTITION BY Occupation ORDER BY Name) as rn
+    FROM OCCUPATIONS
+) AS temp
+GROUP BY rn
+ORDER BY rn;
+
+
+ROW_NUMBER() OVER (PARTITION BY Occupation ORDER BY Name) AS rn
+ROW_NUMBER(): SQL'de bir pencere fonksiyonudur ve sonuç kümesindeki her satıra benzersiz bir artan tamsayı atar.
+
+OVER (PARTITION BY Occupation ORDER BY Name): Bu kısım, ROW_NUMBER() fonksiyonunun çalıştığı pencereyi tanımlar. 
+Bu ifade, Occupation sütunu için her bir benzersiz değerde sıralamanın Name sütununa göre yapılması gerektiğini belirtir.
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+DDL (DATA DEFINITION LANGUAGE)
+-> Create, Alter, Drop gibi DDL komutlarının kullanımı anlatılmaktadır.
+
+#CREATE 
+CREATE TABLE CUSTOMERS( 
+ID INT IDENTITY(1,1) PRIMARY KEY, 
+NAMESURNAME VARCHAR(100) NOT NULL ,
+GENDER VARCHAR(1),
+BIRTHDATE DATE,
+CITY VARCHAR(50),
+TOWN VARCHAR (50),
+TELNR VARCHAR(15),
+AGE INT)
+
+-> Veri tabanı nesnesi oluşturur
+
+
+#ALTER
+ALTER TABLE CUSTOMERS
+ADD PRIMARY KEY (ID)
+
+ALTER TABLE CUSTOMERS
+DROP COLUMN AGEGROUP
+
+ALTER TABLE CUSTOMERS
+ALTER COLUMN NAMESURNAME VARCHAR(100) NOT NULL
+
+-> Veri tabanı nesnesinin özelliğini değiştirmek için kullanılır
+
+
+DROP
+
+-> Veri tabanı nesnesini silmek için kullanılır
+-> TABLOYU TAMAMEN SİLER. TABLO YOK OLUR
+
+-----------------------------------------------------------------------------
+#RDMS (Relational Data Management System)
+      (İlişkisel Veri yönetim Sistemi)
+
+
+->GELENEKSEL YÖNTEM
+
+SELECT* 
+FROM CUSTOMERS,ADDRESS
+WHERE CUSTOMERS.ID=ADDRESS.CUSTOMERID
+
+--->From kısmındajoin etmek istediğin tablo girilir
+
+-->Aliaslı kullanımı
+SELECT C.NAMESURNAME,C.NAMESURNAME, C.EMAIL,
+A.CITY,A.POSTCODE,A.ADDRESSTEXT
+FROM CUSTOMERS C ,ADDRESS A
+WHERE C.ID=A.CUSTOMERID
+_____________________________________________________
+->JOIN YÖNTEMİ
+
+* LEFT RIGHT ARASINDAKİ FARK LEFT DE SELECT KISMININ TAMAMI GELİR KESİŞİM HARİCİNDE
+
+SELECT C.NAMESURNAME,C.NAMESURNAME, C.EMAIL,
+A.CITY,A.POSTCODE,A.ADDRESSTEXT
+FROM CUSTOMERS C 
+JOIN ADDRESS A ON C.ID=A.CUSTOMERID
+
+**-> Aynı anda birden fazla JOIN kullanılabilir
+SELECT C.NAMESURNAME,C.NAMESURNAME, C.EMAIL,
+CT.CITY,A.POSTCODE,A.ADDRESSTEXT
+FROM CUSTOMERS C 
+JOIN ADDRESS A ON C.ID=A.CUSTOMERID
+JOIN CITIES CT ON CT.ID=A.CITYID
+***
+SELECT C.NAMESURNAME,C.NAMESURNAME, C.EMAIL,
+CT.CITY,T.TOWN,A.POSTCODE,A.ADDRESSTEXT
+FROM CUSTOMERS C 
+JOIN ADDRESS A ON C.ID=A.CUSTOMERID
+JOIN CITIES CT ON CT.ID=A.CITYID
+JOIN TOWNS T ON T.ID = A.TOWNID
+****
+
+___________________________________________________
+------------------------------------------------------------------------------------
+KEYS
+Primary Key
+-> Tabloya özel ve benzersiz olan key (ID)
+Foregin Key
+-> Tablolar arasında bağlantı kurmak amaçlı Bir primary keye bağlanmayı sağlar
+
+database diagram -> 
+	primary keyden  sol tıka basılı tutarak
+ 	diğer table a sürükleyerek foregin key tanımı yapılabilir
+
+Foregin Key
+* Primary Keye bağlantısı olan bir sütunun silinmesine izin vermez
+-> Silmek için öncelikle primary e bağlanadığı satırı silmek gerekir
+
+* Primary key kısmında olmayan bir veri ile yeni bir veri oluşturulamaz 
+-> EXAMPLE: Customers ve Address table için Address Customera bağlı olduğunda 
+Address table ına Customers da olmayan bir id ile veri girişi yapılamaz
