@@ -1,0 +1,6 @@
+DROP TABLE USERSYEDEK
+--> Table ý siler
+SELECT * INTO USERSYEDEK FROM USERS
+--> Table ý USERSYEDEK isimli table oluþturup yedekler
+SELECT * FROM USERSYEDEK
+--> KONTROL
