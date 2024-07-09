@@ -1,0 +1,5 @@
+--iif/IIF		IIF(Þart='E',TRUE,FALSE) 
+--Select içinde kullanýlýr(Ýki þart için kullanýlýr)
+USE GYSALES
+SELECT IIF (CUSTOMERGENDER='E','ERKEK','KADIN') CUSTOMERGENDER,COUNT(*) FROM SALES
+GROUP BY CUSTOMERGENDER
